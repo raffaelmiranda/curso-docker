@@ -1,0 +1,2 @@
+docker build -t image-flask-externa .
+docker run -d -p 5000:5000 --name flask-externo-contaname api-container --rm  image-flask-externa

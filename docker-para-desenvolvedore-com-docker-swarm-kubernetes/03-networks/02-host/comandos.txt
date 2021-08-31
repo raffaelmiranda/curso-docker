@@ -1,0 +1,2 @@
+docker build -t image-flask-host .
+docker run -d -p 5000:5000 --name api-host-container --rm  image-flask-host

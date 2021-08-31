@@ -1,0 +1,11 @@
+
+docker network create flask-network
+
+======== MYSQL ======== 
+
+docker build -t image-mysql .
+docker run -d -p 3306:3306 --name mysql-container --rm --network flask-network -e MYSQL_ALLOW_EMPTY_PASSWORD=True image-mysql
+
+======== API ========
+docker build -t image-api .
+docker run -d -p 5000:5000 --name api-container --rm --network flask-network image-api
