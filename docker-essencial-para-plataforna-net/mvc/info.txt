@@ -1,0 +1,33 @@
+﻿dotnet ef migrations add Inicial
+
+================ CRIAR REDE ================
+docker network create --driver bridge corp.network
+
+================ VOLUME ================
+docker volume create data
+
+================ CRIAR O BANCO DE DADOS ================ 
+docker pull mysql:latest
+docker container run -d --name app-db -v data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=senha -e bind-adress=0.0.0.0 mysql
+
+================ CRIAR IMAGEM ================
+docker build -t img-produtos:1.0.2 .
+
+================ VERIFICAR CONTAINERS DENTRO DA REDE ================
+Pegar o IP do container app-db
+
+docker network inspect corp.network
+
+================ CRIAR O APP ================
+docker container run -d --name app-produtos -p 3000:80 -e DBHOST=172.17.0.2 -e DBPORT=3306 -e DBPASSWORD=senha img-produtos:1.0.2
+
+================ LOGS ================
+docker container logs app-produtos
+docker container logs app-db
+
+================ VERIFICAR ================
+docker container exec -it mysql-db bash
+
+mysql -u root -p
+show databases;
+show tables;
