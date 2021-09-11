@@ -25,13 +25,13 @@ namespace mvc
         {
             var host = Configuration["DBHOST"] ?? "localhost";
             var port = Configuration["DBPORT"] ?? "3306";
-            var password = Configuration["DBPASWORD"] ?? "mysql";
+            var password = Configuration["DBPASSWORD"] ?? "mysql";
 
             services.AddControllersWithViews();
 
             services.AddDbContext<AppDbContext>(options => {
                 options.UseMySql(
-                    $"server={host};userid=root;pwd={password};port={port};database=produtosdb",
+                    $"Server={host};Port={port};Database=produtosdb;Uid=root;Pwd={password};",
                     new MySqlServerVersion(new Version(8, 0, 26)));
             });
             
@@ -54,7 +54,7 @@ namespace mvc
 
             app.UseAuthorization();
 
-            PopulaDb.IncluirDabosDB(app);
+            //PopulaDb.IncluirDabosDB(app);
 
             app.UseEndpoints(endpoints =>
             {

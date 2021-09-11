@@ -1,14 +1,15 @@
 ﻿dotnet ef migrations add Inicial
 
 ================ CRIAR REDE ================
-docker network create --driver bridge corp.network
+docker network create frontend
+docker network create backend
 
 ================ VOLUME ================
 docker volume create data
 
 ================ CRIAR O BANCO DE DADOS ================ 
 docker pull mysql:latest
-docker container run -d --name app-db -v data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=senha -e bind-adress=0.0.0.0 mysql
+docker container run -d --name app-db -v data:/var/lib/mysql --network=backend -e MYSQL_ROOT_PASSWORD=senha -e bind-adress=0.0.0.0 mysql
 
 ================ CRIAR IMAGEM ================
 docker build -t img-produtos:1.0.2 .
@@ -19,7 +20,15 @@ Pegar o IP do container app-db
 docker network inspect corp.network
 
 ================ CRIAR O APP ================
-docker container run -d --name app-produtos -p 3000:80 -e DBHOST=172.17.0.2 -e DBPORT=3306 -e DBPASSWORD=senha img-produtos:1.0.2
+docker container create --name app-produtos1 -e DBHOST=app-db --network=backend -e DBPORT=3306 -e DBPASSWORD=senha img-produtos:1.0.2
+docker container create --name app-produtos2 -e DBHOST=app-db --network=backend -e DBPORT=3306 -e DBPASSWORD=senha img-produtos:1.0.2
+docker container create --name app-produtos3 -e DBHOST=app-db --network=backend -e DBPORT=3306 -e DBPASSWORD=senha img-produtos:1.0.2
+
+docker network connect frontend app-produtos1
+docker network connect frontend app-produtos2
+docker network connect frontend app-produtos3
+
+docker container start app-produtos1 app-produtos2 app-produtos3
 
 ================ LOGS ================
 docker container logs app-produtos
@@ -31,3 +40,7 @@ docker container exec -it mysql-db bash
 mysql -u root -p
 show databases;
 show tables;
+
+================ HAPROXY ================
+docker build -t img-haproxy .
+docker container run -d --name loadbalancer --network frontend  -p 3200:80 img-haproxy
