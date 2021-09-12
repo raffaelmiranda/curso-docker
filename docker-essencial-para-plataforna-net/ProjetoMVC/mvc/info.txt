@@ -44,3 +44,7 @@ show tables;
 ================ HAPROXY ================
 docker build -t img-haproxy .
 docker container run -d --name loadbalancer --network frontend  -p 3200:80 img-haproxy
+
+================ DOCKER-COMPOSE ================
+docker-compose -f docker-compose-dev.yml -p dev build
+docker-compose -f docker-compose-de.yml -p dev up mvc

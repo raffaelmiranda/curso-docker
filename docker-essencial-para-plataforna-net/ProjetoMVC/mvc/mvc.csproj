@@ -21,4 +21,10 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Dockerfile - Copy.dev">
+      <DependentUpon>Dockerfile.dev</DependentUpon>
+    </None>
+  </ItemGroup>
+
 </Project>
