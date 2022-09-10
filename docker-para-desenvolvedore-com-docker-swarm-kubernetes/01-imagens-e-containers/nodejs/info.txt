@@ -1,0 +1,5 @@
+npm init -y
+npm install express
+Criar app.js
+node app.js
+Criar o dockerfile
